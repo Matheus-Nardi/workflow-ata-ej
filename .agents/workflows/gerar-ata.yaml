@@ -1,0 +1,151 @@
+workflow:
+  id: gerar-ata
+  nome: Automação de Geração de Atas de Reunião
+  versao: "1.0"
+  fases:
+    - fase_1_mvp
+    - fase_2_template_docx
+    - fase_3_github_mcp
+    - fase_4_pdf_email
+  objetivo: >
+    Automatizar a transcrição de reuniões, extração de tópicos principais,
+    estruturação contratual em JSON e geração de atas formatadas baseadas no template institucional da Empresa Júnior (.docx).
+
+entradas:
+  arquivos_obrigatorios:
+    - nome: audio.m4a  # Suporta .m4a, .mp3, .wav, etc.
+      tipo: audio
+      origem: Upload do áudio da reunião na pasta da reunião (reunioes/YYYY-MM-DD_assunto/)
+    - nome: participantes.txt
+      tipo: texto
+      origem: Lista de participantes presentes na reunião
+
+  arquivos_intermediarios:
+    - nome: transcricao.txt
+      tipo: texto
+      gerado_na_fase: 1
+      usado_na_fase: 1
+    - nome: ata_simplificada.md
+      tipo: texto
+      gerado_na_fase: 1
+      usado_na_fase: 2
+    - nome: ata.json
+      tipo: json
+      gerado_na_fase: 2
+      usado_na_fase: 2
+
+restricoes:
+  gerais:
+    - Não alucinar informações ausentes na reunião.
+    - Manter neutralidade técnica na ata.
+    - Se houver trecho ininteligível, registrar explicitamente como incerteza/dúvida.
+    - Garantir que todos os encaminhamentos possuam ação, responsável e prazo explícitos.
+
+etapas:
+  # Fase 1: MVP
+  - id: transcrever_audio
+    fase: 1
+    descricao: Transcrever o áudio da reunião para texto limpo usando a API da Groq (Whisper Large).
+    entrada: audio.m4a
+    saida_esperada: transcricao.txt
+
+  - id: resumir_e_estruturar
+    fase: 1
+    descricao: Ler a transcrição do áudio e consolidar o conteúdo nos tópicos principais de ata.
+    entradas:
+      - transcricao.txt
+      - participantes.txt
+    saida_esperada: ata_simplificada.md
+    contrato_saida:
+      formato: markdown
+      secoes_obrigatorias:
+        - Título da Reunião
+        - Participantes Presentes
+        - Resumo dos Assuntos Discutidos
+        - Tabela de Encaminhamentos
+        - Registro de Dúvidas / Incertezas
+
+  # Fase 2: Contratos e Templates
+  - id: estruturar_json
+    fase: 2
+    descricao: Converter a ata markdown em JSON validando a estrutura de dados contra o JSON Schema.
+    entradas:
+      - ata_simplificada.md
+      - schema_ata.json
+    saida_esperada: ata.json
+    contrato_saida:
+      formato: json
+      schema: schemas/schema_ata.json
+
+  - id: gerar_word
+    fase: 2
+    descricao: Renderizar os dados JSON estruturados para um documento formal do Word (.docx).
+    entradas:
+      - ata.json
+    saida_esperada: ata.docx
+    contrato_saida:
+      formato: docx
+      estilizacao:
+        fontes: Times New Roman (hierarquia de tamanhos)
+        elementos_obrigatorios: Cabeçalho institucional, rodapé com numeração e tabelas formatadas com cores corporativas da TechTins.
+
+  # Fase 3: GitHub MCP
+  - id: integrar_github_mcp
+    fase: 3
+    descricao: Consultar status de repositórios e commits via protocolo MCP do GitHub para alimentar a ata (etapa opcional).
+    entradas:
+      - prompt_usuario
+    saida_esperada: ata_simplificada.md (enriquecida com status do GitHub)
+
+  # Fase 4: PDF e E-mail
+  - id: converter_para_pdf
+    fase: 4
+    descricao: Converter o arquivo Word final (.docx) em um documento PDF estável e profissional.
+    entradas:
+      - ata.docx
+    saida_esperada: ata.pdf
+
+  - id: enviar_emails
+    fase: 4
+    descricao: Distribuir o PDF gerado em anexo por e-mail para todos os membros da EJ cadastrados.
+    entradas:
+      - ata.pdf
+      - config/membros.json
+    saida_esperada: Log de confirmação de envio ou dry-run.
+
+validacao:
+  fase_1:
+    criterios:
+      - transcricao.txt foi gerado com sucesso.
+      - ata_simplificada.md contém todas as seções obrigatórias.
+      - Todos os participantes informados constam na ata.
+      - A tabela de encaminhamentos possui colunas para Ação, Responsável e Prazo.
+  fase_2:
+    criterios:
+      - O arquivo schemas/schema_ata.json existe e é válido.
+      - O arquivo ata.json gerado é validado com sucesso contra o schema sem erros estruturais.
+      - O arquivo ata.docx é criado e estruturado programaticamente preservando a identidade visual da TechTins.
+  fase_3:
+    criterios:
+      - O agente utiliza a ferramenta GitHub MCP se solicitado no prompt do usuário.
+      - A ata gerada (Markdown, JSON e Word) contém a seção opcional de Status de Desenvolvimento caso a busca do GitHub retorne dados.
+      - Se a chamada ao GitHub falhar ou for omitida, o workflow prossegue sem interrupções (fallback).
+  fase_4:
+    criterios:
+      - O arquivo ata.pdf é gerado com sucesso na pasta da reunião.
+      - O arquivo config/membros.json existe com os e-mails dos membros cadastrados.
+      - O script python de e-mail é executado com sucesso em modo de simulação (dry-run) ou enviando e-mails reais dependendo da configuração do .env.
+
+saida_final:
+  fase_1:
+    arquivo: ata_simplificada.md
+    finalidade: Ata de reunião estruturada em markdown para validação de conteúdo.
+  fase_2:
+    arquivo: ata.docx
+    finalidade: Ata de reunião oficial e formalizada no layout da Empresa Júnior para assinatura/arquivamento.
+  fase_3:
+    arquivo: ata.docx
+    finalidade: Ata oficial no layout TechTins enriquecida com status e atividade de repositórios do GitHub.
+  fase_4:
+    arquivo: ata.pdf
+    finalidade: Ata oficial finalizada em PDF enviada aos membros por e-mail para consultas futuras.

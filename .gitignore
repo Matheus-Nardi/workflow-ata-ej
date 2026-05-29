@@ -1,0 +1,26 @@
+# Configurações locais / API Keys
+.env
+
+# Arquivos de áudio de reuniões (podem ser grandes e confidenciais)
+audio_reuniao.mp3
+*.mp3
+*.wav
+*.m4a
+
+# Arquivos temporários / intermediários gerados pelo workflow
+transcricao.txt
+ata_simplificada.md
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Agente / Workflows (só versionar os workflows)
+.agents/*
+!.agents/workflows/
+
+# Reuniões (ignorar futuras execuções, mas manter a de exemplo e a estrutura)
+reunioes/*
+!reunioes/.gitkeep
+!reunioes/exemplo_2026-05-28/

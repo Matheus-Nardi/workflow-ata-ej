@@ -1,0 +1,61 @@
+{
+  "titulo": "Reunião Geral de Alinhamento e Estruturação de Cargos da TechTins EJ",
+  "data": "2026-05-28",
+  "local": "Remoto (Google Meet)",
+  "participantes": [
+    "Matheus Nardi (Dir Projetos)",
+    "Professor Marco Sousa (Coordenador)",
+    "Groq (Assistente)",
+    "Maria Gabriela (Membro)",
+    "J (Membro)",
+    "Ana (Divulgação/Marketing)",
+    "Marta (DIPOGES)"
+  ],
+  "resumo_assuntos": [
+    {
+      "tema": "Apresentação Geral e Funcionamento da Empresa Júnior",
+      "detalhes": "Foi realizada uma explicação introdutória sobre o modelo de negócios de uma Empresa Júnior (EJ) para os novos membros (Maria Gabriela e J). Foi ressaltado o caráter de prestação de serviços a baixo custo (voltado para entidades privadas e causas sociais), o caráter voluntário das funções (sem pagamento de salários aos membros) e que os lucros são reinvestidos integralmente no desenvolvimento da própria empresa."
+    },
+    {
+      "tema": "Estruturação de Cargos e Áreas",
+      "detalhes": "Foram revisadas as áreas internas da EJ e a necessidade de preenchimento de vagas. Há necessidade de membros nas diretorias de Marketing, Financeiro e Conselho Fiscal. Foi solicitado que os novos membros evitem ingressar na DIPOGES (Diretoria de Processos e Gestão), pois a área já conta com muitos integrantes."
+    },
+    {
+      "tema": "Funcionamento da Diretoria de Capacitação e Divulgação",
+      "detalhes": "Esclarecimento das dúvidas de Maria Gabriela sobre a Diretoria de Capacitação. Foi detalhado que essa área é focada em identificar necessidades de desenvolvimento, buscar parcerias e cursos (como os oferecidos pelo Sebrae) e capacitar internamente o time da EJ."
+    },
+    {
+      "tema": "Participação no Programa Jangada",
+      "detalhes": "Foi informado que a EJ está participando do programa Jangada, um processador estruturado que auxiliará a empresa na formalização e organização de todos os processos internos."
+    }
+  ],
+  "encaminhamentos": [
+    {
+      "acao": "Definir as diretorias/cargos pendentes para os novos membros",
+      "responsavel": "Novos Membros / Diretoria",
+      "prazo": "Próxima Reunião"
+    },
+    {
+      "acao": "Entrar em contato com a Diretoria de Capacitação/Divulgação para esclarecer atribuições específicas",
+      "responsavel": "Maria Gabriela",
+      "prazo": "Próxima Reunião"
+    },
+    {
+      "acao": "Iniciar as atividades de estruturação da empresa no programa Jangada",
+      "responsavel": "Diretoria da EJ",
+      "prazo": "Próxima Reunião"
+    }
+  ],
+  "duvidas_incertezas": [
+    "Esclarecer detalhadamente o papel de cada nova diretoria interna (como Capacitação e Divulgação) com a diretora da área responsável.",
+    "Definição final dos cargos que serão de fato ocupados pelos novos membros Maria Gabriela e J."
+  ],
+  "status_desenvolvimento": [
+    {
+      "repositorio": "Techtins/techtins",
+      "commits_recentes": "Sem novos commits na data de 28/05/2026.",
+      "ultimo_commit": "Ajuste menu em 'faleConosco', 'Membros' e adição do favicon (Autor: maria0x1 em 06/05/2026)",
+      "data": "2026-05-06"
+    }
+  ]
+}
