@@ -50,8 +50,15 @@ def estruturar_com_groq(markdown_content, schema_content, api_key):
         "Regras cruciais:\n"
         "1. Retorne APENAS o JSON puro. Não insira blocos de código markdown (como ```json) ou qualquer explicação.\n"
         "2. Certifique-se de que a data está no formato YYYY-MM-DD. Se a data fornecida for 28/05/2026, converta para '2026-05-28'.\n"
-        "3. Mapeie todas as seções obrigatórias (titulo, data, local, participantes, resumo_assuntos, encaminhamentos, duvidas_incertezas) e, caso exista na ata em Markdown, a seção opcional de 'Status de Desenvolvimento' (mapeada para a chave 'status_desenvolvimento').\n"
+        "3. Mapeie todas as seções obrigatórias (titulo, data, local, participantes, resumo_assuntos, encaminhamentos, duvidas_incertezas, texto_corrido) e, caso exista na ata em Markdown, a seção opcional de 'Status de Desenvolvimento' (mapeada para a chave 'status_desenvolvimento').\n"
         "4. Na tabela de encaminhamentos, preencha acao, responsavel e prazo de cada item.\n"
+        "5. O campo 'texto_corrido' DEVE ser redigido seguindo estritamente as regras de ata legal e burocrática:\n"
+        "   - Preâmbulo Burocrático: O texto deve iniciar obrigatoriamente descrevendo a data, o horário, o local e o nome de todos os participantes presentes. A data, o ano e o horário devem ser escritos inteiramente por extenso. Exemplo: 'Aos vinte e nove dias do mês de maio de dois mil e vinte e seis, às dez horas, na sala do ESC da Universidade Estadual do Tocantins, reuniram-se...' seguido da lista de participantes separados por vírgula.\n"
+        "   - Texto Contínuo: O texto corre do início ao fim sem qualquer quebra de linha (sem '\\n'), sem marcadores de tópicos (como hifens ou asteriscos no início de linhas) e sem recuos ou parágrafos. Tudo é um único e imenso bloco.\n"
+        "   - Articulação e Transição de Assuntos (Sem Negrito): O texto deve ser inteiramente em texto plano, sem qualquer marcação de negrito (NÃO use '**'). Articule a transição de assuntos, encaminhamentos e dúvidas de forma discursiva, usando termos literais por extenso, tais como: 'na pauta número um...', 'com relação à pauta número dois...', 'como encaminhamento número um...', 'como encaminhamento número dois...', 'como primeira dúvida/incerteza...'. Todos os ordinais e cardinais devem ser escritos por extenso (ex: 'número um', 'número dois', 'primeiro', 'segundo').\n"
+        "   - Números por Extenso: Absolutamente TODOS os números, datas, horários, valores monetários e documentos devem ser escritos por extenso (ex: 'cinco', 'vinte e nove', 'dez horas', 'dois mil e vinte e seis'). Não use numerais cardinais ou ordinais.\n"
+        "   - Verbos no Passado: Todos os acontecimentos e discussões devem ser relatados no pretérito perfeito do indicativo (ex: 'reuniram-se', 'deliberou-se', 'aprovou-se', 'declarou').\n"
+        "   - Sem rasuras: Caso detecte contradições ou correções no markdown de origem, utilize a palavra 'digo' para efetuar a correção na hora (ex: 'Aos vinte dias, digo, vinte e nove dias do mês de maio...').\n"
     )
     
     prompt_usuario = (

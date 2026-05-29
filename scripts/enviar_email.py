@@ -78,6 +78,12 @@ def enviar_ata_por_email(anexo_path, membros_path, assunto_ata=None, dry_run=Fal
         print("Ativando modo simulado (dry-run). Nenhum e-mail real será enviado.")
         dry_run = True
 
+    # Define variáveis auxiliares para o anexo
+    pdf_path = anexo_path
+    nome_arquivo = os.path.basename(anexo_path)
+    _, ext = os.path.splitext(anexo_path)
+    ext = ext.lower()
+
     # Assunto e corpo do e-mail
     titulo_reuniao = assunto_ata if assunto_ata else "Ata de Reunião"
     assunto = f"[Ata de Reunião] {titulo_reuniao}"
@@ -124,6 +130,7 @@ def enviar_ata_por_email(anexo_path, membros_path, assunto_ata=None, dry_run=Fal
         
         # Anexo
         with open(pdf_path, "rb") as f:
+            if ext == ".pdf":
                 anexo = MIMEApplication(f.read(), _subtype="pdf")
             elif ext == ".docx":
                 anexo = MIMEApplication(

@@ -50,6 +50,9 @@ graph TD
 1. **Validação Estrita:** O arquivo `schema_ata.json` valida corretamente o arquivo `ata.json`.
 2. **Resiliência:** Se modificarmos manualmente o JSON para desrespeitar o contrato (ex: alterando a data para "texto inválido"), a biblioteca `jsonschema` deve acusar o erro em tempo de execução.
 3. **Qualidade Visual do Word:** O arquivo `.docx` gerado programaticamente deve ser estruturado com:
-    *   Tabela formatada de encaminhamentos com bordas e coloração específicas.
+    *   Texto corrido e contínuo (sem parágrafos ou recuos), com alinhamento justificado e fechamento com traços.
+    *   Preâmbulo formal incluindo data, local e participantes por extenso.
+    *   Destaques de pautas em negrito integrados ao fluxo do texto.
+    *   Numeração de linhas sequencial contínua na margem esquerda.
     *   Cabeçalho institucional elegante e paginação automática no rodapé.
     *   Ausência de placeholders ou erros de formatação.

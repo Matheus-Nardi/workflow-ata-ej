@@ -1,61 +1,50 @@
 {
-  "titulo": "Reunião Geral de Alinhamento e Estruturação de Cargos da TechTins EJ",
+  "titulo": "Reunião de Alinhamento e Estruturação de Cargos da Empresa Júnior",
   "data": "2026-05-28",
-  "local": "Remoto (Google Meet)",
+  "local": "Sala do ESC - Unitins Campus Palmas",
   "participantes": [
-    "Matheus Nardi (Dir Projetos)",
-    "Professor Marco Sousa (Coordenador)",
-    "Groq (Assistente)",
-    "Maria Gabriela (Membro)",
-    "J (Membro)",
-    "Ana (Divulgação/Marketing)",
-    "Marta (DIPOGES)"
+    "Matheus Nardi",
+    "Professor Marco Sousa",
+    "Groq"
   ],
   "resumo_assuntos": [
     {
-      "tema": "Apresentação Geral e Funcionamento da Empresa Júnior",
-      "detalhes": "Foi realizada uma explicação introdutória sobre o modelo de negócios de uma Empresa Júnior (EJ) para os novos membros (Maria Gabriela e J). Foi ressaltado o caráter de prestação de serviços a baixo custo (voltado para entidades privadas e causas sociais), o caráter voluntário das funções (sem pagamento de salários aos membros) e que os lucros são reinvestidos integralmente no desenvolvimento da própria empresa."
+      "tema": "Apresentação Geral da Empresa Júnior",
+      "detalhes": "Explicação para os novos membros sobre o funcionamento básico da Empresa Júnior, esclarecimento de que a EJ realiza prestação de serviços para fins sociais e empresas privadas, e reforço de que os cargos são voluntários e não há remuneração/salário direta para os membros."
     },
     {
-      "tema": "Estruturação de Cargos e Áreas",
-      "detalhes": "Foram revisadas as áreas internas da EJ e a necessidade de preenchimento de vagas. Há necessidade de membros nas diretorias de Marketing, Financeiro e Conselho Fiscal. Foi solicitado que os novos membros evitem ingressar na DIPOGES (Diretoria de Processos e Gestão), pois a área já conta com muitos integrantes."
+      "tema": "Estrutura Organizacional e Divisão de Cargos",
+      "detalhes": "A maioria dos cargos já foi definida na reunião anterior, apresentação de Matheus Nardi como Diretor de Projetos, discussão sobre a necessidade de preencher vagas em áreas carentes, especificamente Marketing e Conselho Fiscal / Financeiro."
     },
     {
-      "tema": "Funcionamento da Diretoria de Capacitação e Divulgação",
-      "detalhes": "Esclarecimento das dúvidas de Maria Gabriela sobre a Diretoria de Capacitação. Foi detalhado que essa área é focada em identificar necessidades de desenvolvimento, buscar parcerias e cursos (como os oferecidos pelo Sebrae) e capacitar internamente o time da EJ."
+      "tema": "Diretoria de Capacitação e Divulgação",
+      "detalhes": "Esclarecimento de dúvidas sobre a Diretoria de Capacitação, foco no desenvolvimento interno dos membros, mapeando e sugerindo cursos externos para capacitar a equipe técnica, e divulgação é focada no marketing e na administração interna de desenvolvimento e capacitação da empresa e dos membros."
     },
     {
-      "tema": "Participação no Programa Jangada",
-      "detalhes": "Foi informado que a EJ está participando do programa Jangada, um processador estruturado que auxiliará a empresa na formalização e organização de todos os processos internos."
+      "tema": "Programa de Aceleração Jangada",
+      "detalhes": "Apresentação da participação da EJ no programa Jangada, um processo/programa estruturador que auxiliará a EJ na formalização de todos os processos internos e estruturação corporativa."
     }
   ],
   "encaminhamentos": [
     {
-      "acao": "Definir as diretorias/cargos pendentes para os novos membros",
-      "responsavel": "Novos Membros / Diretoria",
-      "prazo": "Próxima Reunião"
-    },
-    {
-      "acao": "Entrar em contato com a Diretoria de Capacitação/Divulgação para esclarecer atribuições específicas",
+      "acao": "Sanar dúvidas específicas sobre as atribuições de Capacitação com a membra D",
       "responsavel": "Maria Gabriela",
       "prazo": "Próxima Reunião"
     },
     {
-      "acao": "Iniciar as atividades de estruturação da empresa no programa Jangada",
-      "responsavel": "Diretoria da EJ",
+      "acao": "Definir a alocação dos novos membros nas diretorias carentes (Marketing ou Conselho Fiscal)",
+      "responsavel": "Novos Membros",
       "prazo": "Próxima Reunião"
+    },
+    {
+      "acao": "Iniciar o processo de estruturação e formalização de processos via programa Jangada",
+      "responsavel": "Toda a Equipe",
+      "prazo": "Contínuo"
     }
   ],
   "duvidas_incertezas": [
-    "Esclarecer detalhadamente o papel de cada nova diretoria interna (como Capacitação e Divulgação) com a diretora da área responsável.",
-    "Definição final dos cargos que serão de fato ocupados pelos novos membros Maria Gabriela e J."
+    "Atribuições de Capacitação: Maria Gabriela expressou dúvidas se compreendeu completamente o papel da Diretoria de Capacitação",
+    "Incertezas de Áudio: Presença de trechos confusos ou de baixa compreensão na transcrição bruta sobre maratonas de programação e projetos de inscrição que o pessoal lança"
   ],
-  "status_desenvolvimento": [
-    {
-      "repositorio": "Techtins/techtins",
-      "commits_recentes": "Sem novos commits na data de 28/05/2026.",
-      "ultimo_commit": "Ajuste menu em 'faleConosco', 'Membros' e adição do favicon (Autor: maria0x1 em 06/05/2026)",
-      "data": "2026-05-06"
-    }
-  ]
+  "texto_corrido": "Aos vinte e oito dias do mês de maio de dois mil e vinte e seis, às onze horas, na sala do ESC da Universidade Estadual do Tocantins, reuniram-se Matheus Nardi, Professor Marco Sousa, Groq, e outros membros mencionados ou envolvidos indiretamente, como Maria Gabriela, Ana, Marta, e D, para discutir os assuntos da Empresa Júnior, começando com a apresentação geral da empresa, onde foi explicado que a empresa realiza prestação de serviços para fins sociais e empresas privadas, e que os preços cobrados são abaixo do mercado por se tratarem de membros em formação, e reforçou-se que os cargos são voluntários e não há remuneração/salário direta para os membros, em seguida, foi discutida a estrutura organizacional e a divisão de cargos, onde a maioria dos cargos já foi definida na reunião anterior, e foi apresentado Matheus Nardi como Diretor de Projetos, e discutiu-se a necessidade de preencher vagas em áreas carentes, especificamente Marketing e Conselho Fiscal / Financeiro, após isso, foi esclarecido o papel da Diretoria de Capacitação, que foca no desenvolvimento interno dos membros, mapeando e sugerindo cursos externos para capacitar a equipe técnica, e a divulgação é focada no marketing e na administração interna de desenvolvimento e capacitação da empresa e dos membros, também foi apresentado o programa de aceleração Jangada, que é um processo/programa estruturador que auxiliará a EJ na formalização de todos os processos internos e estruturação corporativa, como encaminhamento, foi definido que Maria Gabriela sanará dúvidas específicas sobre as atribuições de Capacitação com a membra D, os novos membros definirão a alocação dos novos membros nas diretorias carentes, e toda a equipe iniciará o processo de estruturação e formalização de processos via programa Jangada, e como dúvidas e incertezas, Maria Gabriela expressou dúvidas se compreendeu completamente o papel da Diretoria de Capacitação, e há presença de trechos confusos ou de baixa compreensão na transcrição bruta sobre maratonas de programação e projetos de inscrição que o pessoal lança."
 }

@@ -98,6 +98,10 @@
         "additionalProperties": false
       },
       "description": "Seção opcional com status e atividade de repositórios do GitHub"
+    },
+    "texto_corrido": {
+      "type": "string",
+      "description": "Texto corrido e contínuo da ata, sem parágrafos ou marcadores, no formato legal e com o preâmbulo burocrático inicial."
     }
   },
   "required": [
@@ -107,7 +111,8 @@
     "participantes",
     "resumo_assuntos",
     "encaminhamentos",
-    "duvidas_incertezas"
+    "duvidas_incertezas",
+    "texto_corrido"
   ],
   "additionalProperties": false
 }

@@ -70,6 +70,37 @@ def add_page_number_field(run, field_name):
     run._r.append(fldChar2)
     run._r.append(fldChar3)
 
+def add_line_numbering(section):
+    """Ativa a numeração contínua de linhas na margem esquerda da seção."""
+    sectPr = section._sectPr
+    lnNumType = sectPr.find(qn('w:lnNumType'))
+    if lnNumType is None:
+        lnNumType = OxmlElement('w:lnNumType')
+        lnNumType.set(qn('w:countBy'), '1')
+        lnNumType.set(qn('w:start'), '1')
+        lnNumType.set(qn('w:restart'), 'continuous')
+        lnNumType.set(qn('w:distance'), '360')
+        sectPr.append(lnNumType)
+
+def suprimir_numeracao_linhas(paragraph):
+    """Suprime a numeração de linhas para um parágrafo específico."""
+    pPr = paragraph._p.get_or_add_pPr()
+    suppress = pPr.find(qn('w:suppressLineNumbers'))
+    if suppress is None:
+        pPr.append(OxmlElement('w:suppressLineNumbers'))
+
+
+def adicionar_texto_com_negrito(paragraph, texto):
+    """Adiciona texto a um parágrafo interpretando a marcação ** do Markdown para negrito."""
+    partes = texto.split("**")
+    for idx, parte in enumerate(partes):
+        if not parte:
+            continue
+        run = paragraph.add_run(parte)
+        run.font.name = 'Times New Roman'
+        if idx % 2 == 1:
+            run.bold = True
+
 def configurar_estilos(doc):
     """Configura os estilos globais do documento utilizando Times New Roman e cores oficiais."""
     styles = doc.styles
@@ -119,25 +150,32 @@ def formatar_data(data_iso):
     return data_iso
 
 def substituir_placeholders(doc, dados):
-    """Substitui placeholders padrão no corpo, cabeçalhos, rodapés e tabelas do documento."""
+    """Substitui placeholders e remove metadados redundantes no corpo da ata legal."""
     placeholders = {
-        "{{TITULO}}": dados.get("titulo", "ATA DE REUNIÃO"),
+        "{{TITULO}}": dados.get("titulo", "ATA DE REUNIÃO").upper(),
         "{{DATA}}": formatar_data(dados.get("data", "")),
         "{{LOCAL}}": dados.get("local", ""),
         "{{PARTICIPANTES}}": ", ".join(dados.get("participantes", []))
     }
     
-    # Substitui no corpo
+    # 1. Remove parágrafos do corpo que contêm metadados agora redundantes
+    paras_to_delete = []
     for p in doc.paragraphs:
-        for key, val in placeholders.items():
-            if key in p.text:
-                if key == "{{PARTICIPANTES}}":
-                    p.paragraph_format.space_after = Pt(16)
-                for run in p.runs:
-                    if key in run.text:
-                        run.text = run.text.replace(key, val)
+        if any(ph in p.text for ph in ["{{DATA}}", "{{LOCAL}}", "{{PARTICIPANTES}}", "PARTICIPANTES PRESENTES"]):
+            paras_to_delete.append(p)
+            continue
+            
+        # Substitui o título no corpo
+        if "{{TITULO}}" in p.text:
+            for run in p.runs:
+                if "{{TITULO}}" in run.text:
+                    run.text = run.text.replace("{{TITULO}}", placeholders["{{TITULO}}"])
+                    
+    for p in paras_to_delete:
+        p_element = p._element
+        p_element.getparent().remove(p_element)
                         
-    # Substitui em tabelas existentes
+    # 2. Substitui em tabelas existentes
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
@@ -148,7 +186,7 @@ def substituir_placeholders(doc, dados):
                                 if key in run.text:
                                     run.text = run.text.replace(key, val)
                                     
-    # Substitui em cabeçalhos e rodapés de todas as seções
+    # 3. Substitui em cabeçalhos e rodapés de todas as seções
     for section in doc.sections:
         for h_f in [section.header, section.footer]:
             if h_f:
@@ -287,153 +325,47 @@ def main():
         p_border_run.font.size = Pt(8)
         p_border_run.font.color.rgb = COLOR_PRIMARY
         
-        # --- METADADOS DA REUNIÃO (DATA / LOCAL) ---
-        p_meta = doc.add_paragraph()
-        p_meta.paragraph_format.space_after = Pt(14)
-        run_date_label = p_meta.add_run("Data da Reunião: ")
-        run_date_label.bold = True
-        p_meta.add_run(f"{formatar_data(dados.get('data', ''))}\n")
+    # --- ATIVA NUMERAÇÃO DE LINHAS ---
+    for section in doc.sections:
+        add_line_numbering(section)
         
-        run_loc_label = p_meta.add_run("Local / Canal: ")
-        run_loc_label.bold = True
-        p_meta.add_run(f"{dados.get('local', '')}")
-        
-        # --- PARTICIPANTES ---
-        add_paragraph_with_style_fallback(doc, "PARTICIPANTES PRESENTES", style_name='Heading 2')
-        participantes_str = ", ".join(dados.get("participantes", []))
-        p_part = doc.add_paragraph()
-        p_part.add_run(participantes_str)
-        p_part.paragraph_format.space_after = Pt(16)
-        
-    # --- RESUMO DOS ASSUNTOS DISCUTIDOS ---
-    add_paragraph_with_style_fallback(doc, "RESUMO DOS ASSUNTOS DISCUTIDOS", style_name='Heading 2')
+    # --- TEXTO CORRIDO E CONTÍNUO DA ATA ---
+    texto_ata = dados.get("texto_corrido", "").strip()
     
-    for item in dados.get("resumo_assuntos", []):
-        p_tema = doc.add_paragraph()
-        p_tema.paragraph_format.space_before = Pt(6)
-        p_tema.paragraph_format.space_after = Pt(2)
-        run_tema = p_tema.add_run(f"• {item.get('tema', '')}")
-        run_tema.bold = True
-        run_tema.font.color.rgb = COLOR_PRIMARY
+    # Adiciona traços ao final para fechar a ata caso não tenha
+    if texto_ata and not texto_ata.endswith("-"):
+        texto_ata += " " + ("-" * 60)
         
-        p_det = doc.add_paragraph()
-        p_det.paragraph_format.left_indent = Inches(0.25)
-        p_det.add_run(item.get("detalhes", ""))
-        
-    # --- TABELA DE ENCAMINHAMENTOS ---
-    add_paragraph_with_style_fallback(doc, "TABELA DE ENCAMINHAMENTOS (AÇÕES E PRAZOS)", style_name='Heading 2')
+    p_texto = doc.add_paragraph()
+    p_texto.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    p_texto.paragraph_format.space_before = Pt(12)
+    p_texto.paragraph_format.space_after = Pt(0)
+    p_texto.paragraph_format.line_spacing = 1.15
     
-    encaminhamentos = dados.get("encaminhamentos", [])
-    if encaminhamentos:
-        # Cria tabela com 3 colunas (Ação, Responsável, Prazo)
-        table = doc.add_table(rows=1, cols=3)
-        table.alignment = WD_TABLE_ALIGNMENT.CENTER
-        
-        # Largura das colunas (Soma = ~6.27 polegadas de área útil na página A4)
-        col_widths = [Inches(3.27), Inches(1.5), Inches(1.5)]
-        
-        # Cabeçalhos da Tabela
-        hdr_cells = table.rows[0].cells
-        headers_labels = ["Ação / Atividade", "Responsável", "Prazo"]
-        
-        for i, text in enumerate(headers_labels):
-            hdr_cells[i].text = ""
-            p = hdr_cells[i].paragraphs[0]
-            p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-            run = p.add_run(text)
-            run.bold = True
-            run.font.color.rgb = RGBColor(255, 255, 255) # Texto Branco
-            set_cell_background(hdr_cells[i], HEX_PRIMARY) # Fundo Azul Escuro
-            set_cell_margins(hdr_cells[i], top=140, bottom=140, left=140, right=140)
-            hdr_cells[i].width = col_widths[i]
+    adicionar_texto_com_negrito(p_texto, texto_ata)
+    
+    # --- SUPRIME NUMERAÇÃO DE LINHAS PARA PARÁGRAFOS ANTERIORES AO CONTEÚDO ---
+    for p in doc.paragraphs:
+        if p._element != p_texto._element:
+            suprimir_numeracao_linhas(p)
             
-        # Conteúdo da Tabela
-        for idx, enc in enumerate(encaminhamentos):
-            row_cells = table.add_row().cells
-            valores = [enc.get("acao", ""), enc.get("responsavel", ""), enc.get("prazo", "")]
-            
-            for i, val in enumerate(valores):
-                row_cells[i].text = ""
-                p = row_cells[i].paragraphs[0]
-                p.add_run(val)
-                set_cell_margins(row_cells[i], top=100, bottom=100, left=140, right=140)
-                row_cells[i].width = col_widths[i]
-                
-                # Zebrador simples (linhas pares com fundo roxo claro de destaque)
-                if idx % 2 != 0:
-                    set_cell_background(row_cells[i], "F1EDF8")
+    # Supressão de numeração de linhas em cabeçalhos e rodapés de todas as seções
+    for section in doc.sections:
+        for header in [section.header, section.first_page_header, section.even_page_header]:
+            if header:
+                for p in header.paragraphs:
+                    suprimir_numeracao_linhas(p)
+        for footer in [section.footer, section.first_page_footer, section.even_page_footer]:
+            if footer:
+                for p in footer.paragraphs:
+                    suprimir_numeracao_linhas(p)
                     
-        set_table_borders(table)
-        p_space = doc.add_paragraph()
-        p_space.paragraph_format.space_before = Pt(0)
-        p_space.paragraph_format.space_after = Pt(12)
-    else:
-        p_no_enc = doc.add_paragraph("Nenhum encaminhamento ou pendência registrada para esta reunião.")
-        p_no_enc.paragraph_format.space_after = Pt(16)
-        
-    # --- REGISTRO OBRIGATÓRIO DE DÚVIDAS / INCERTEZAS ---
-    add_paragraph_with_style_fallback(doc, "DÚVIDAS, ANOTAÇÕES E INCERTEZAS", style_name='Heading 2')
-    
-    duvidas = dados.get("duvidas_incertezas", [])
-    if duvidas:
-        for duv in duvidas:
-            p_duv = add_paragraph_with_style_fallback(doc, duv, style_name='List Bullet', bullet=True)
-            if p_duv.runs:
-                p_duv.runs[-1].italic = True
-    else:
-        doc.add_paragraph("Nenhuma dúvida ou incerteza registrada.")
-        
-    # --- STATUS DE DESENVOLVIMENTO (GITHUB) ---
-    github_status = dados.get("status_desenvolvimento", [])
-    if github_status:
-        p_space_gh = doc.add_paragraph()
-        p_space_gh.paragraph_format.space_before = Pt(14)
-        p_space_gh.paragraph_format.space_after = Pt(0)
-        
-        add_paragraph_with_style_fallback(doc, "STATUS DE DESENVOLVIMENTO (GITHUB)", style_name='Heading 2')
-        
-        table_gh = doc.add_table(rows=1, cols=4)
-        table_gh.alignment = WD_TABLE_ALIGNMENT.CENTER
-        
-        col_widths_gh = [Inches(1.5), Inches(1.2), Inches(2.3), Inches(1.2)]
-        
-        hdr_cells_gh = table_gh.rows[0].cells
-        headers_labels_gh = ["Repositório", "Atividade Recente", "Último Commit / Detalhes", "Última Atualização"]
-        
-        for i, text in enumerate(headers_labels_gh):
-            hdr_cells_gh[i].text = ""
-            p = hdr_cells_gh[i].paragraphs[0]
-            p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-            run = p.add_run(text)
-            run.bold = True
-            run.font.color.rgb = RGBColor(255, 255, 255)
-            set_cell_background(hdr_cells_gh[i], HEX_PRIMARY)
-            set_cell_margins(hdr_cells_gh[i], top=140, bottom=140, left=140, right=140)
-            hdr_cells_gh[i].width = col_widths_gh[i]
-            
-        for idx, item in enumerate(github_status):
-            row_cells_gh = table_gh.add_row().cells
-            valores_gh = [
-                item.get("repositorio", ""),
-                str(item.get("commits_recentes", "Sem commits")),
-                item.get("ultimo_commit", "Nenhuma informação"),
-                item.get("data", "")
-            ]
-            
-            for i, val in enumerate(valores_gh):
-                row_cells_gh[i].text = ""
-                p = row_cells_gh[i].paragraphs[0]
-                p.add_run(val)
-                set_cell_margins(row_cells_gh[i], top=100, bottom=100, left=140, right=140)
-                row_cells_gh[i].width = col_widths_gh[i]
-                
-                if idx % 2 != 0:
-                    set_cell_background(row_cells_gh[i], "F1EDF8")
-                    
-        set_table_borders(table_gh)
-        p_space_after_gh = doc.add_paragraph()
-        p_space_after_gh.paragraph_format.space_before = Pt(0)
-        p_space_after_gh.paragraph_format.space_after = Pt(12)
+    # Supressão de numeração em tabelas (caso existam no documento ou template)
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for p in cell.paragraphs:
+                    suprimir_numeracao_linhas(p)
         
     # Se não estiver usando um template pronto, configuramos o rodapé padrão com paginação
     if not usa_template:
