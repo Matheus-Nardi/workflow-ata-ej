@@ -102,6 +102,18 @@
     "texto_corrido": {
       "type": "string",
       "description": "Texto corrido e contínuo da ata, sem parágrafos ou marcadores, no formato legal e com o preâmbulo burocrático inicial."
+    },
+    "numero": {
+      "type": "integer",
+      "description": "Número sequencial da ata no semestre"
+    },
+    "ano": {
+      "type": "integer",
+      "description": "Ano de realização da reunião"
+    },
+    "semestre": {
+      "type": "integer",
+      "description": "Semestre de realização da reunião (1 ou 2)"
     }
   },
   "required": [

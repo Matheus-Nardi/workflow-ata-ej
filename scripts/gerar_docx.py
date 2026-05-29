@@ -170,6 +170,22 @@ def substituir_placeholders(doc, dados):
             for run in p.runs:
                 if "{{TITULO}}" in run.text:
                     run.text = run.text.replace("{{TITULO}}", placeholders["{{TITULO}}"])
+            
+            # Se a ata possuir número (SQLite), insere abaixo do título no template
+            if "numero" in dados:
+                from docx.text.paragraph import Paragraph
+                new_p_elm = OxmlElement('w:p')
+                p._p.addnext(new_p_elm)
+                new_p = Paragraph(new_p_elm, p._parent)
+                new_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                new_p.paragraph_format.space_before = Pt(4)
+                new_p.paragraph_format.space_after = Pt(12)
+                texto_num = f"Ata nº {dados['numero']:02d} / {dados['ano']}.{dados['semestre']}"
+                run_num = new_p.add_run(texto_num)
+                run_num.font.name = 'Times New Roman'
+                run_num.font.size = Pt(12)
+                run_num.font.color.rgb = COLOR_PRIMARY
+                run_num.bold = True
                     
     for p in paras_to_delete:
         p_element = p._element
@@ -315,6 +331,19 @@ def main():
         run_title = p_title.runs[0] if p_title.runs else p_title.add_run()
         run_title.text = dados.get("titulo", "ATA DE REUNIÃO").upper()
         run_title.bold = True
+        
+        # --- NUMERAÇÃO DA ATA (NOVO) ---
+        if "numero" in dados:
+            p_num = doc.add_paragraph()
+            p_num.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            p_num.paragraph_format.space_before = Pt(4)
+            p_num.paragraph_format.space_after = Pt(12)
+            texto_num = f"Ata nº {dados['numero']:02d} / {dados['ano']}.{dados['semestre']}"
+            run_num = p_num.add_run(texto_num)
+            run_num.font.name = 'Times New Roman'
+            run_num.font.size = Pt(12)
+            run_num.font.color.rgb = COLOR_PRIMARY
+            run_num.bold = True
         
         # Linha divisória fina sob o título
         p_border = doc.add_paragraph()
