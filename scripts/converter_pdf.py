@@ -57,9 +57,9 @@ def converter_docx_para_pdf(input_path, output_dir=None):
         print(e.stderr)
         return False
     except FileNotFoundError:
-        print("Erro: O comando 'libreoffice' não foi localizado no sistema.")
-        print("Certifique-se de que o LibreOffice está instalado e disponível no PATH.")
-        return False
+        print("Aviso: O comando 'libreoffice' não foi localizado no sistema.")
+        print("A conversão automática para PDF foi pulada. Apenas o arquivo Word (.docx) estará disponível.")
+        return None
     except Exception as e:
         print(f"Erro inesperado durante a conversão: {e}")
         return False
@@ -74,8 +74,9 @@ def main():
     args = parser.parse_args()
     
     pdf_criado = converter_docx_para_pdf(args.input, args.output_dir)
-    if not pdf_criado:
+    if pdf_criado is False:
         sys.exit(1)
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()

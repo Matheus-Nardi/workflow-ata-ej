@@ -35,11 +35,22 @@ def obter_config_smtp():
         "password": os.environ.get("SMTP_PASSWORD")
     }
 
-def enviar_ata_por_email(pdf_path, membros_path, assunto_ata=None, dry_run=False):
-    """Envia o PDF da ata para todos os e-mails listados no arquivo de membros."""
-    if not os.path.exists(pdf_path):
-        print(f"Erro: Arquivo PDF '{pdf_path}' não localizado.")
-        return False
+def enviar_ata_por_email(anexo_path, membros_path, assunto_ata=None, dry_run=False):
+    """Envia a ata (PDF ou DOCX) por e-mail para os membros cadastrados."""
+    # Fallback se o PDF não existir mas o DOCX sim
+    if not os.path.exists(anexo_path):
+        base, ext = os.path.splitext(anexo_path)
+        if ext.lower() == ".pdf":
+            docx_path = base + ".docx"
+            if os.path.exists(docx_path):
+                print(f"Aviso: Arquivo PDF '{anexo_path}' não encontrado. Usando '{docx_path}' como fallback.")
+                anexo_path = docx_path
+            else:
+                print(f"Erro: Nem o arquivo PDF '{anexo_path}' nem o Word '{docx_path}' foram localizados.")
+                return False
+        else:
+            print(f"Erro: Arquivo de anexo '{anexo_path}' não localizado.")
+            return False
         
     if not os.path.exists(membros_path):
         print(f"Erro: Banco de contatos '{membros_path}' não localizado.")
@@ -113,8 +124,16 @@ def enviar_ata_por_email(pdf_path, membros_path, assunto_ata=None, dry_run=False
         
         # Anexo
         with open(pdf_path, "rb") as f:
-            anexo = MIMEApplication(f.read(), _subtype="pdf")
-            anexo.add_header('Content-Disposition', 'attachment', filename=os.path.basename(pdf_path))
+                anexo = MIMEApplication(f.read(), _subtype="pdf")
+            elif ext == ".docx":
+                anexo = MIMEApplication(
+                    f.read(),
+                    _subtype="vnd.openxmlformats-officedocument.wordprocessingml.document"
+                )
+            else:
+                anexo = MIMEApplication(f.read())
+                
+            anexo.add_header('Content-Disposition', 'attachment', filename=nome_arquivo)
             msg.attach(anexo)
             
         print(f"Conectando ao servidor SMTP {smtp_config['host']}:{smtp_config['port']}...")
@@ -139,7 +158,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Distribui o arquivo PDF da ata para todos os e-mails da Empresa Júnior cadastrados no sistema."
     )
-    parser.add_argument("-i", "--input", required=True, help="Caminho para o arquivo PDF da ata.")
+    parser.add_argument("-i", "--input", required=True, help="Caminho para o arquivo da ata (PDF ou Word).")
     parser.add_argument("-c", "--config", default="config/membros.json", help="Caminho para o arquivo de membros (membros.json).")
     parser.add_argument("-t", "--title", help="Título descritivo da reunião (para compor o assunto).")
     parser.add_argument("--dry-run", action="store_true", help="Executa uma simulação sem disparar e-mails reais.")

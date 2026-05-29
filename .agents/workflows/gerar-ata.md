@@ -13,8 +13,8 @@ Execute o workflow definido em `.agents/workflows/gerar-ata.yaml`.
 1. Leia o arquivo `.agents/workflows/gerar-ata.yaml` para entender a definição das fases, entradas e regras.
 2. Sempre verifique se o áudio (`audio.mp3`, `audio.m4a`, etc.) e a lista de participantes (`participantes.txt`) estão presentes na pasta da reunião correspondente dentro do diretório `reunioes/`.
 3. Garanta que a etapa de transcrição foi executada usando o script `scripts/transcrever.py` antes de realizar a sumarização.
-4. Ao gerar a ata em Markdown (`ata_simplificada.md`), siga estritamente o contrato de seções obrigatórias:
-   - Título da Reunião
+4. Ao gerar a ata em Markdown (`ata_simplificada.md`), capture as variáveis fornecidas pelo usuário no prompt (como data, local, horário e título/assunto). Se o usuário disser "reunião X que ocorreu no lugar Z às Y na data D", preencha o cabeçalho com esses dados. Caso não sejam informados, tente inferir a partir do áudio/transcrição ou do nome da pasta da reunião. Siga estritamente o contrato de seções obrigatórias:
+   - Título da Reunião (usando o título fornecido ou inferido)
    - Participantes Presentes
    - Resumo dos Assuntos Discutidos
    - Tabela de Encaminhamentos (Ação, Responsável, Prazo)

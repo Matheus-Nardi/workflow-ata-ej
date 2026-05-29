@@ -70,19 +70,19 @@ O projeto será desenvolvido iterativamente, dividido em três fases principais 
     *   A chamada MCP deve ocorrer sem erros e integrar os dados de forma coesa com o texto da ata.
     *   O workflow deve continuar funcionando normalmente (fallback) caso o usuário opte por não incluir os dados do GitHub ou a requisição falhe.
 
-### Fase 4: Conversão para PDF e Notificação por E-mail
-**Objetivo:** Automatizar a distribuição da ata finalizada para toda a equipe em formato PDF.
+### Fase 4: Conversão para PDF (Opcional) e Notificação por E-mail
+**Objetivo:** Automatizar a distribuição da ata finalizada para toda a equipe em formato PDF (ou DOCX como fallback).
 
 *   **Critérios de Inclusão:**
-    *   Conversão do documento oficial do formato `.docx` para `.pdf` utilizando o LibreOffice Headless em ambiente Linux.
+    *   Conversão do documento oficial do formato `.docx` para `.pdf` utilizando o LibreOffice Headless (opcional).
     *   Envio automático de e-mail SMTP para todos os membros cadastrados na base do sistema (`config/membros.json`).
-    *   Anexo da ata convertida em formato PDF.
+    *   Anexo da ata convertida em formato PDF (ou o arquivo `.docx` original caso o LibreOffice não esteja instalado).
     *   Disparo seguro de credenciais a partir de variáveis de ambiente (`.env`).
 *   **Demonstração Mínima:**
-    *   Após a validação e geração da ata em Word, o workflow gera o arquivo PDF no mesmo diretório e todos os membros cadastrados recebem a mensagem do bot de automação com o PDF anexado.
+    *   Após a validação e geração da ata em Word, o workflow gera o arquivo PDF no mesmo diretório (ou usa o `.docx` se o conversor não estiver instalado) e todos os membros cadastrados recebem a mensagem do bot com o documento anexado.
 *   **Critérios de Aceite:**
-    *   O documento PDF gerado deve ser idêntico visualmente e diagramaticamente ao `.docx`.
-    *   O e-mail deve ser entregue com sucesso aos destinatários válidos configurados em `config/membros.json`.
+    *   Se o LibreOffice estiver instalado, o documento PDF gerado deve ser idêntico visualmente ao `.docx`.
+    *   O e-mail deve ser entregue com sucesso aos destinatários válidos contendo a ata anexada (seja em PDF ou DOCX).
     *   O assunto e corpo do e-mail devem ser profissionais e objetivos.
 
 ---
@@ -90,7 +90,7 @@ O projeto será desenvolvido iterativamente, dividido em três fases principais 
 ## 3. Fluxo do Usuário (User Flow)
 
 1.  O usuário abre o chat do Antigravity.
-2.  Digita o comando `/gerar-ata` anexando o arquivo de áudio da reunião e descrevendo os participantes (podendo passar parâmetros opcionais como incluir status do Github).
+2.  Digita o comando `/gerar-ata` anexando o arquivo de áudio da reunião, fornecendo a lista de participantes e passando opcionalmente metadados no prompt (ex: título/pauta da reunião, data, local e horário) bem como o parâmetro para inclusão do GitHub.
 3.  O agente de IA recebe e processa o áudio (transcrição).
 4.  O agente (se solicitado) faz a requisição MCP para o GitHub da organização.
 5.  O agente formata os dados transcritos juntamente com os dados do Github, aplicando o template da Empresa Júnior.

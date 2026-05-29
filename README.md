@@ -101,11 +101,12 @@ workflow-ata/
 
 ### Pré-requisitos
 1. **Python 3.10+** instalado.
-2. **LibreOffice** instalado no sistema (necessário para a conversão headless de `.docx` para `.pdf` no Linux):
-   ```bash
-   sudo apt update
-   sudo apt install libreoffice-writer --no-install-recommends
-   ```
+2. **LibreOffice** (Opcional): Necessário apenas se desejar a conversão automática de `.docx` para `.pdf`. Se não estiver instalado, o workflow funcionará perfeitamente, gerando a ata em Word (`.docx`) e enviando-a diretamente no e-mail como fallback de forma totalmente segura e multiplataforma.
+   * *Instalação no Linux (opcional):*
+     ```bash
+     sudo apt update
+     sudo apt install libreoffice-writer --no-install-recommends
+     ```
 
 ### Passo a Passo
 

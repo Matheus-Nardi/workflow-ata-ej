@@ -20,6 +20,17 @@ entradas:
       tipo: texto
       origem: Lista de participantes presentes na reunião
 
+  parametros_opcionais_prompt:
+    - nome: titulo_reuniao
+      tipo: texto
+      descricao: Título ou pauta principal da reunião (ex: "Reunião de Alinhamento"). Se omitido, a IA infere da transcrição.
+    - nome: data_reuniao
+      tipo: texto
+      descricao: Data em que a reunião ocorreu (formato YYYY-MM-DD ou DD/MM/AAAA). Se omitido, infere da pasta ou transcrição.
+    - nome: local_reuniao
+      tipo: texto
+      descricao: Local de ocorrência (ex: "Google Meet", "Sala 3"). Se omitido, assume "Não especificado" ou infere da transcrição.
+
   arquivos_intermediarios:
     - nome: transcricao.txt
       tipo: texto
