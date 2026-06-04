@@ -156,6 +156,31 @@ workflow-ata/
 
 ---
 
+## 🛠️ Automação com Makefile
+
+Para simplificar a execução manual da transcrição de áudio pelo terminal, o projeto conta com um `Makefile` na raiz. Ele fornece atalhos limpos para o script de transcrição.
+
+### Comandos Disponíveis
+
+* **Visualizar opções de uso:**
+  ```bash
+  make
+  ```
+
+* **Transcrever áudio de uma reunião (padrão `audio.mp3`):**
+  ```bash
+  make transcrever PASTA=reunioes/reuniao_2026-06-04
+  ```
+
+* **Transcrever áudio com nome/extensão personalizada:**
+  ```bash
+  make transcrever PASTA=reunioes/reuniao_2026-06-04 AUDIO=gravacao.m4a
+  ```
+
+O resultado será salvo automaticamente como `transcricao.txt` na pasta da reunião, servindo de insumo imediato para o workflow.
+
+---
+
 ## 🔄 Versionamento e Rastreabilidade
 
 Para garantir que a inteligência do agente e um caso de uso prático estejam sempre disponíveis para a equipe (e para a avaliação acadêmica), o projeto segue regras estritas de versionamento no `.gitignore`:
