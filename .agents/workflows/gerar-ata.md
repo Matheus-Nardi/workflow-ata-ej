@@ -17,11 +17,11 @@ Execute o workflow definido em `.agents/workflows/gerar-ata.yaml`.
    - Título da Reunião (usando o título fornecido ou inferido)
    - Participantes Presentes
    - Resumo dos Assuntos Discutidos
-   - Tabela de Encaminhamentos (Ação, Responsável, Prazo)
+   - Encaminhamentos da Reunião (Ação, Responsável, Prazo)
    - Registro de Dúvidas / Incertezas
 5. Registre trechos ininteligíveis ou decisões pendentes como incertezas explícitas.
 6. Não avance para a Fase 2 (JSON e template Word) antes que a ata em Markdown (Fase 1) seja validada pelo usuário.
-7. Ao finalizar a Fase 3 (ou Fase 2 caso não haja uso de GitHub), execute a Fase 4 gerando o arquivo `ata.pdf` via script de conversão e dispare a distribuição automática por e-mail para todos os membros.
+7. Ao finalizar a Fase 3 (SQLite), execute a Fase 4 gerando o arquivo `ata.pdf` via script de conversão e dispare a distribuição automática por e-mail para todos os membros.
 
 ## Saídas esperadas
 
@@ -29,7 +29,7 @@ Conforme as fases progridem, você deve guiar e gerar:
 
 - **Fase 1:** `ata_simplificada.md`
 - **Fase 2:** `schema_ata.json`, `ata.json` e o arquivo final `ata.docx`.
-- **Fase 3:** Relatório de commits/pull requests no GitHub relacionados aos encaminhamentos da ata.
+- **Fase 3:** Atualização no banco SQLite `atas.db` e gravação do número sequencial oficial da ata em `ata.json`.
 - **Fase 4:** `ata.pdf` gerado na pasta da reunião e log de envio (real ou dry-run) aos e-mails dos membros em `config/membros.json`.
 
 ## Condições de parada

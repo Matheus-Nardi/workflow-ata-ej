@@ -5,11 +5,11 @@ workflow:
   fases:
     - fase_1_mvp
     - fase_2_template_docx
-    - fase_3_github_mcp
+    - fase_3_armazenamento_sqlite
     - fase_4_pdf_email
   objetivo: >
     Automatizar a transcrição de reuniões, extração de tópicos principais,
-    estruturação contratual em JSON e geração de atas formatadas baseadas no template institucional da Empresa Júnior (.docx).
+    estruturação contratual em JSON, numeração sequencial via SQLite e geração de atas formatadas baseadas no template institucional da Empresa Júnior (.docx).
 
 entradas:
   arquivos_obrigatorios:
@@ -73,7 +73,7 @@ etapas:
         - Título da Reunião
         - Participantes Presentes
         - Resumo dos Assuntos Discutidos
-        - Tabela de Encaminhamentos
+        - Encaminhamentos da Reunião
         - Registro de Dúvidas / Incertezas
 
   # Fase 2: Contratos e Templates
@@ -100,13 +100,14 @@ etapas:
         fontes: Times New Roman (hierarquia de tamanhos)
         elementos_obrigatorios: Cabeçalho institucional, rodapé com numeração e tabelas formatadas com cores corporativas da TechTins.
 
-  # Fase 3: GitHub MCP
-  - id: integrar_github_mcp
+  # Fase 3: Persistência SQLite e Numeração
+  - id: registrar_no_banco
     fase: 3
-    descricao: Consultar status de repositórios e commits via protocolo MCP do GitHub para alimentar a ata (etapa opcional).
+    descricao: Registrar metadados da ata no banco SQLite local, garantindo a numeração automática e idempotência.
     entradas:
-      - prompt_usuario
-    saida_esperada: ata_simplificada.md (enriquecida com status do GitHub)
+      - ata.json
+      - atas.db
+    saida_esperada: Log de registro no banco de dados e atualização de ata.json com número oficial da ata.
 
   # Fase 4: PDF e E-mail
   - id: converter_para_pdf
@@ -130,17 +131,16 @@ validacao:
       - transcricao.txt foi gerado com sucesso.
       - ata_simplificada.md contém todas as seções obrigatórias.
       - Todos os participantes informados constam na ata.
-      - A tabela de encaminhamentos possui colunas para Ação, Responsável e Prazo.
+      - Os encaminhamentos da reunião possuem ação, responsável e prazo definidos.
   fase_2:
     criterios:
       - O arquivo schemas/schema_ata.json existe e é válido.
       - O arquivo ata.json gerado é validado com sucesso contra o schema sem erros estruturais.
-      - O arquivo ata.docx é criado e estruturado programaticamente preservando a identidade visual da TechTins.
+      - O arquivo ata.docx é criado e estruturado programaticamente preservando a identidade visual da TechTins e contendo o texto corrido legal.
   fase_3:
     criterios:
-      - O agente utiliza a ferramenta GitHub MCP se solicitado no prompt do usuário.
-      - A ata gerada (Markdown, JSON e Word) contém a seção opcional de Status de Desenvolvimento caso a busca do GitHub retorne dados.
-      - Se a chamada ao GitHub falhar ou for omitida, o workflow prossegue sem interrupções (fallback).
+      - O banco atas.db é atualizado com o registro da ata.
+      - A numeração sequencial semestral e anual é atribuída de forma idempotente e gravada em ata.json.
   fase_4:
     criterios:
       - O arquivo ata.pdf é gerado com sucesso na pasta da reunião.
@@ -155,8 +155,8 @@ saida_final:
     arquivo: ata.docx
     finalidade: Ata de reunião oficial e formalizada no layout da Empresa Júnior para assinatura/arquivamento.
   fase_3:
-    arquivo: ata.docx
-    finalidade: Ata oficial no layout TechTins enriquecida com status e atividade de repositórios do GitHub.
+    arquivo: atas.db
+    finalidade: Banco de dados SQLite contendo histórico de atas registradas e numeração sequencial atualizada.
   fase_4:
     arquivo: ata.pdf
     finalidade: Ata oficial finalizada em PDF enviada aos membros por e-mail para consultas futuras.

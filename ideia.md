@@ -25,7 +25,7 @@ O projeto será apresentado em classe e servirá como base para a nota da discip
 
 Pretende-de fazer o versionamento do workflow em um repositório no github, de modo que seja possivel o compartilhamento do projeto e a colaboração de outros desenvolvedores.
 
-Uma possível ideia futura é fazer a comunicação via MCP com o github da organização, de forma a relatar o status dos repositorios, commits, participantes e etc.
+Uma possível ideia futura é persistir os dados da ata em banco de dados SQLite local, gravando o histórico e fornecendo numeração automática e sequencial.
 
 O projeto sera desenvolvido com apoio de agentes de IA, criação de documentos de PRD.md que guiem o escopo do projeto, e execução do plano de ação estabelecido.
 
@@ -35,7 +35,7 @@ De maneira geral os objetivos do projeto são:
 
 1- Criar um workflow que gere atas de reunião de forma automatizada.
 2- Ter uma ata padronizada, com encaminhamentos, destaques dos pontos relevantes, proximos passos e etc.
-3- Trazer informações no github para ter noção do progresso do desenvolvimento e colaboração de outros desenvolvedores.E isso pode ser opcional ou não na hora da chamada ao workflow
+3- Persistir o histórico de atas localmente via SQLite e automatizar o cálculo do número da ata.
 4- Um projeto pratico para a materia de IA, versionado, estrutura e útil
 
 

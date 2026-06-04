@@ -33,8 +33,8 @@ graph TD
     C -- 3. Retorna Transcrição --> B
     B -- 4. Processa & Estrutura --> D[Gemini 1.5 Flash]
     D -- 5. Retorna Conteúdo Estruturado --> B
-    B -- 6. Opcional: Consulta MCP --> E[GitHub EJ]
-    E -- Retorna Commits/Atividades --> B
+    B -- 6. Registra no SQLite --> E[Banco atas.db]
+    E -- Retorna Sequencial --> B
     B -- 7. Mescla no Template --> F[templates/template.docx]
     F -- Cria --> G[reunioes/ata.docx]
     G -- 8. Converte via LibreOffice --> H[reunioes/ata.pdf]
@@ -44,6 +44,7 @@ graph TD
     style B fill:#8a2be2,stroke:#fff,stroke-width:2px,color:#fff
     style C fill:#ff8c00,stroke:#fff,stroke-width:2px,color:#fff
     style D fill:#1e90ff,stroke:#fff,stroke-width:2px,color:#fff
+    style E fill:#2ed573,stroke:#fff,stroke-width:2px,color:#fff
     style H fill:#ff4500,stroke:#fff,stroke-width:2px,color:#fff
     style J fill:#2ed573,stroke:#fff,stroke-width:2px,color:#fff
 ```
@@ -58,7 +59,7 @@ O desenvolvimento foi estruturado em quatro fases principais para garantir teste
 | :--- | :--- | :--- |
 | **Fase 1: MVP** | Transcrição básica e Sumarização | Comando `/gerar-ata` funcional, integração com Groq Whisper, geração de resumo simples identificando tópicos e participantes. |
 | **Fase 2: Template** | Formatação Institucional | Integração com arquivo `.docx` template da EJ, preenchimento dinâmico sem quebra de estilo e exportação em Word. |
-| **Fase 3: GitHub (MCP)** | Enriquecimento de Contexto | Chamada MCP para ler commits e pull requests da equipe e anexar o status de progresso diretamente na ata gerada. |
+| **Fase 3: SQLite** | Persistência e Numeração | Registro automático de metadados da ata em banco de dados SQLite local, controle de numeração sequencial semestral e anual. |
 | **Fase 4: PDF e E-mail** | Distribuição e Envio | Conversão headless para `.pdf` via LibreOffice e disparo SMTP automatizado para a base de membros cadastrados. |
 
 ---
@@ -76,7 +77,7 @@ workflow-ata/
 ├── fases/                      # Documentação detalhada das etapas de desenvolvimento
 │   ├── fase-1-gerar-ata.md
 │   ├── fase-2-gerar-ata.md
-│   ├── fase-3-gerar-ata.md
+│   ├── fase-3-armazenamento.md
 │   └── fase-4-enviar-email.md
 ├── reunioes/                   # Pasta para armazenamento das atas e transcrições geradas
 ├── schemas/

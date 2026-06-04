@@ -72,33 +72,6 @@
       },
       "description": "Registro de trechos ininteligíveis, dúvidas ou decisões pendentes"
     },
-    "status_desenvolvimento": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "repositorio": {
-            "type": "string",
-            "description": "Nome do repositório do GitHub"
-          },
-          "commits_recentes": {
-            "type": ["integer", "string"],
-            "description": "Total de commits recentes ou indicação de atividade"
-          },
-          "ultimo_commit": {
-            "type": "string",
-            "description": "Mensagem e autor do último commit"
-          },
-          "data": {
-            "type": "string",
-            "description": "Data ou período da última atualização"
-          }
-        },
-        "required": ["repositorio"],
-        "additionalProperties": false
-      },
-      "description": "Seção opcional com status e atividade de repositórios do GitHub"
-    },
     "texto_corrido": {
       "type": "string",
       "description": "Texto corrido e contínuo da ata, sem parágrafos ou marcadores, no formato legal e com o preâmbulo burocrático inicial."

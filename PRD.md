@@ -15,7 +15,7 @@ Desenvolver um workflow automatizado no Antigravity, acionado pelo comando `/ger
 **Objetivos do Projeto:**
 1. Criar um workflow de automação para atas de reunião.
 2. Gerar uma ata padronizada (com encaminhamentos, destaques de pontos relevantes e próximos passos) e aderente ao template visual da empresa (banner/rodapé).
-3. Desenvolver uma integração (opcional) com o GitHub da organização para incluir relatórios de progresso via protocolo MCP.
+3. Implementar um sistema de persistência local em SQLite para gerenciar o histórico e garantir a numeração sequencial das atas.
 4. Entregar um projeto prático, versionado, estruturado e útil para a disciplina de IA.
 
 ---
@@ -33,7 +33,7 @@ O projeto será desenvolvido iterativamente, dividido em três fases principais 
     *   Transcrição do áudio e extração de tópicos principais.
 *   **Critérios de Exclusão (Fora de Escopo):**
     *   Formatação final no template da Empresa Júnior.
-    *   Integração com GitHub.
+    *   Armazenamento em banco de dados SQLite.
 *   **Demonstração Mínima:**
     *   O usuário envia o áudio de uma reunião teste e a IA retorna um texto legível identificando quem participou e quais foram os pontos discutidos de forma clara.
 *   **Critérios de Aceite:**
@@ -55,20 +55,20 @@ O projeto será desenvolvido iterativamente, dividido em três fases principais 
     *   A formatação original do arquivo base `.docx` (fontes, margens, banners) deve ser perfeitamente preservada após a inserção dos textos da ata.
     *   O documento gerado deve conter todas as seções obrigatórias especificadas.
 
-### Fase 3: Integração GitHub (MCP) e Otimização
-**Objetivo:** Adicionar inteligência externa ao workflow para enriquecer a ata com dados de desenvolvimento da equipe.
+### Fase 3: Armazenamento e Numeração Automatizada (SQLite)
+**Objetivo:** Persistir os metadados das atas localmente e calcular de forma automatizada a numeração sequencial burocrática por semestre e ano.
 
 *   **Critérios de Inclusão:**
-    *   Parâmetro opcional no comando para incluir dados do GitHub.
-    *   Comunicação via MCP para buscar status de repositórios, commits recentes e atividade dos participantes da organização.
-    *   Estratégias de otimização de tokens (ex: refinamento do prompt, pré-processamento do áudio se necessário).
+    *   Criação de um banco de dados SQLite local (`atas.db`).
+    *   Cálculo automático do número da ata com base na data da reunião e histórico armazenado.
+    *   Gravação de data, título, caminhos dos arquivos JSON e DOCX no banco de dados.
 *   **Critérios de Exclusão:**
-    *   Modificações ou operações de escrita nos repositórios do GitHub (apenas leitura de dados).
+    *   Hospedagem em servidores de banco de dados na nuvem (usar banco SQLite local).
 *   **Demonstração Mínima:**
-    *   A ata gerada inclui uma seção extra: "Status de Desenvolvimento", populada com dados reais do GitHub da organização no período analisado.
+    *   A ata gerada no Word e no JSON final contém o número oficial calculado automaticamente (ex: "Ata nº 01/2026").
 *   **Critérios de Aceite:**
-    *   A chamada MCP deve ocorrer sem erros e integrar os dados de forma coesa com o texto da ata.
-    *   O workflow deve continuar funcionando normalmente (fallback) caso o usuário opte por não incluir os dados do GitHub ou a requisição falhe.
+    *   A inserção do registro da ata deve ser idempotente (se a mesma ata for reprocessada, a numeração não deve incrementar incorretamente).
+    *   O banco SQLite deve estruturar os dados de forma legível e relacional.
 
 ### Fase 4: Conversão para PDF (Opcional) e Notificação por E-mail
 **Objetivo:** Automatizar a distribuição da ata finalizada para toda a equipe em formato PDF (ou DOCX como fallback).
@@ -90,11 +90,11 @@ O projeto será desenvolvido iterativamente, dividido em três fases principais 
 ## 3. Fluxo do Usuário (User Flow)
 
 1.  O usuário abre o chat do Antigravity.
-2.  Digita o comando `/gerar-ata` anexando o arquivo de áudio da reunião, fornecendo a lista de participantes e passando opcionalmente metadados no prompt (ex: título/pauta da reunião, data, local e horário) bem como o parâmetro para inclusão do GitHub.
+2.  Digita o comando `/gerar-ata` anexando o arquivo de áudio da reunião, fornecendo a lista de participantes e passando opcionalmente metadados no prompt (ex: título/pauta da reunião, data, local e horário).
 3.  O agente de IA recebe e processa o áudio (transcrição).
-4.  O agente (se solicitado) faz a requisição MCP para o GitHub da organização.
-5.  O agente formata os dados transcritos juntamente com os dados do Github, aplicando o template da Empresa Júnior.
-6.  O agente gera a ata em formato Word (`ata.docx`).
+4.  O agente gera a ata estruturada em Markdown e depois converte os dados em JSON.
+5.  O agente executa o script de banco SQLite para gravar os metadados e retornar o número sequencial semestral oficial.
+6.  O agente mescla os dados estruturados e a numeração oficial no template da Empresa Júnior, gerando a ata em formato Word (`ata.docx`).
 7.  O agente converte a ata para PDF (`ata.pdf`) e distribui automaticamente para todos os membros cadastrados no sistema via e-mail.
 8.  O agente confirma a conclusão de todo o processo e retorna o status do envio.
 
